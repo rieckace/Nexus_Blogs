@@ -1,0 +1,87 @@
+.subscribe-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
+}
+
+.sub-main {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.subscribe-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.subscribe-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.subscribe-container label {
+    margin-bottom: 10px;
+}
+
+.subscribe-container input {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.subscribe-container button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.subscribe-container button:hover {
+    background-color: #45a049;
+}
+
+.subscribe-container p {
+    text-align: center;
+    color: #4CAF50;
+    margin-top: 20px;
+}
+
+/* Footer Section */
+.footer-section {
+    background-color: #333333ab;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .marquee-text {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  
+  .footer-text {
+    margin: 5px 0;
+  }
+  
+  .footer-links {
+    margin-top: 10px;
+  }
+  
+  .footer-link {
+    color: #fff;
+    margin: 0 10px;
+    text-decoration: none;
+  }
+  
+  .footer-link:hover {
+    text-decoration: underline;
+  }
+  

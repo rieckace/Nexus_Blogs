@@ -1,0 +1,146 @@
+body  {
+  font-family: Arial, sans-serif;
+  /* background-color: #f4f4f4; */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  background:linear-gradient(to bottom,rgb(212, 203, 197),rgb(236, 197, 197),rgb(122, 205, 181));
+  background-image: url('./assets/bg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  align-items: center;
+  /* height: 100vh; */
+}
+
+nav {
+  gap: 1rem;
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.styled-button {
+  background-color: teal;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  width: 100px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 30px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.styled-button:hover {
+  background-color: darkslategray;
+}
+
+.form-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  margin: 50px auto;
+}
+
+h2 {
+  text-align: center;
+  color: teal;
+}
+h1{
+  text-align: center;
+  /* display: flex; */
+  background:linear-gradient(to right, red, black);
+  background-clip: text;
+  color:transparent;
+
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin:5px;
+  background-color: teal;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: rgb(207, 135, 84);
+}
+
+.register input {
+  display: block;
+  margin-bottom: 10px;
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  justify-content: center;
+  align-items: center;
+}
+
+.register button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: teal;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: ease-in-out 2s;
+}
+
+.register button:hover {
+  background-color: #e72145;
+  transition: ease-in 0.3s;
+  
+}
+.login input {
+  display: block;
+  margin-bottom: 10px;
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: teal;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login button:hover {
+  background-color: darkslategray;
+}
+
+.register-container{
+  height: 100vh;
+}
