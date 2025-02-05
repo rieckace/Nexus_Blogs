@@ -16,6 +16,7 @@ connectDB();
 // Middleware
 app.use(cors({
     origin: 'http://localhost:3000',
+    methods : ["POST", "GET"],
     credentials: true
 }));
 app.use(express.json());
