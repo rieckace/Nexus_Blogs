@@ -15,7 +15,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ["https://blogwebsitefrontend.vercel.app/"],
     methods : ["POST", "GET"],
     credentials: true
 }));
