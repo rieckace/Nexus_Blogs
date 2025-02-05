@@ -8,6 +8,7 @@ const contactRoutes = require('./routes/contact');
 // const profileRoutes = require('./routes/profile');
 // const commentRoutes = require('./routes/comments');
 
+const PORT = process.env.PORT || 4000;
 const app = express();
 
 // Connect to MongoDB
@@ -29,6 +30,6 @@ app.use('/con', contactRoutes);
 // app.use('/comment', commentRoutes);
 // app.use('/profile', profileRoutes);
 
-app.listen(4000, () => {
-    console.log('Server is running on port http://localhost:4000');
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
