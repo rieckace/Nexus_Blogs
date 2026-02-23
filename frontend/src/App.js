@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { UserContextProvider } from "./UserContext";
 import HomePage from "./Pages/HomePage";
@@ -14,16 +14,6 @@ import Profile from "./Pages/Profile"; // Import Profile page
 import './App.css';
 
 function App() {
-  const [posts, setPosts] = useState([]);
-
-  // Fetch posts from the backend when the component mounts
-  useEffect(() => {
-    fetch("https://blogwebsitebackend.vercel.app/api/posts")
-      .then((response) => response.json())
-      .then((data) => setPosts(data))
-      .catch((err) => console.error("Error fetching posts:", err));
-  }, []);
-
   return (
     <UserContextProvider>
       <Router>
@@ -48,7 +38,7 @@ function App() {
             element={
               <>
                 <Header />
-                <MyBlogPage posts={posts} setPosts={setPosts} />
+                <MyBlogPage />
               </>
             }
           />
@@ -57,7 +47,7 @@ function App() {
             element={
               <>
                 <Header />
-                <CreatePostPage setPosts={setPosts} />
+                <CreatePostPage />
               </>
             }
           />

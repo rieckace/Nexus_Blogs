@@ -48,9 +48,6 @@ export default function Header() {
            <Link to="/profile" className={location.pathname === '/profile' ? 'active' : ''}>
             <FaUser className="profile-icon" /> Profile
           </Link> 
-          <Link to="/">
-            <FaTimes className="profile-icon" /> Logout
-          </Link>
         </nav>
 
         {/* <div className={`search-container ${searchOpen ? 'open' : ''}`}>

@@ -3,35 +3,52 @@ import { UserContext } from '../UserContext';
 import { useNavigate } from 'react-router-dom';
 import '../Styles/Profile.css';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [avatarBuster, setAvatarBuster] = useState(0);
+  const [status, setStatus] = useState('');
   const { user: contextUser, setUser: setContextUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchUserProfile();
-  }, [contextUser.username]);
+    if (!contextUser?.username) {
+      navigate('/login');
+      return;
+    }
+    fetchUserProfile(contextUser.username);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contextUser?.username]);
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = async (username) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/profile/${contextUser.username}`, {
-        credentials: 'include'
-      });
+      setStatus('');
+      const response = await fetch(`${API_BASE_URL}/profile/${encodeURIComponent(username)}`);
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
       setUser(data.user);
       setEditedUser(data.user);
     } catch (error) {
       console.error('Error fetching user profile:', error);
+      setStatus('Failed to load profile.');
     }
+  };
+
+  const getAvatarSrc = () => {
+    if (imagePreview) return imagePreview;
+    if (!user?.avatar) return '/default-avatar.png';
+    if (typeof user.avatar === 'string' && user.avatar.startsWith('data:')) return user.avatar;
+    return `${user.avatar}${user.avatar.includes('?') ? '&' : '?'}v=${avatarBuster}`;
   };
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      setStatus('');
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -42,16 +59,27 @@ const Profile = () => {
       formData.append('avatar', file);
 
       try {
-        const response = await fetch(`http://localhost:4000/api/profile/upload-avatar`, {
+        const username = contextUser?.username;
+        if (!username) {
+          setStatus('Please login again.');
+          return;
+        }
+
+        setStatus('Uploading photo...');
+        const response = await fetch(`${API_BASE_URL}/profile/${encodeURIComponent(username)}/avatar`, {
           method: 'POST',
-          credentials: 'include',
           body: formData,
         });
         if (!response.ok) throw new Error('Failed to upload image');
         const data = await response.json();
-        setUser(prev => ({ ...prev, avatar: data.avatarUrl }));
+        setUser(prev => (prev ? { ...prev, avatar: data.avatarUrl } : prev));
+        setContextUser(prev => (prev ? { ...prev, avatar: data.avatarUrl } : prev));
+        setAvatarBuster(Date.now());
+        setImagePreview(null);
+        setStatus('Photo updated.');
       } catch (error) {
         console.error('Error uploading image:', error);
+        setStatus('Photo upload failed.');
       }
     }
   };
@@ -59,29 +87,40 @@ const Profile = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:4000/api/profile/update`, {
+      const username = contextUser?.username;
+      if (!username) {
+        setStatus('Please login again.');
+        return;
+      }
+      setStatus('Saving...');
+      const response = await fetch(`${API_BASE_URL}/profile/${encodeURIComponent(username)}`, {
         method: 'PUT',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(editedUser),
+        body: JSON.stringify({
+          email: editedUser?.email,
+          location: editedUser?.location,
+          phone: editedUser?.phone,
+          bio: editedUser?.bio,
+        }),
       });
       if (!response.ok) throw new Error('Failed to update profile');
       const data = await response.json();
       setUser(data.user);
       setIsEditing(false);
-      setContextUser(data.user);
+      setContextUser(prev => (prev ? { ...prev, ...data.user } : data.user));
+      setStatus('Profile updated.');
     } catch (error) {
       console.error('Error updating profile:', error);
+      setStatus('Failed to update profile.');
     }
   };
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:4000/api/auth/logout', {
+      await fetch(`${API_BASE_URL}/auth/logout`, {
         method: 'POST',
-        credentials: 'include',
       });
       setContextUser(null);
       navigate('/');
@@ -99,7 +138,7 @@ const Profile = () => {
       <div className="profile-header">
         <div className="avatar-section">
           <img 
-            src={imagePreview || user.avatar || '/default-avatar.png'} 
+            src={getAvatarSrc()} 
             alt={user.username} 
             className="profile-avatar" 
           />
@@ -114,6 +153,8 @@ const Profile = () => {
             Change Photo
           </label>
         </div>
+
+        {status ? <div className="profile-status">{status}</div> : null}
 
         {!isEditing ? (
           <div className="profile-info">
@@ -142,8 +183,8 @@ const Profile = () => {
             <input
               type="text"
               value={editedUser.username}
-              onChange={(e) => setEditedUser({ ...editedUser, username: e.target.value })}
               placeholder="Username"
+              disabled
             />
             <input
               type="email"

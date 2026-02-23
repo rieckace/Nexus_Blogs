@@ -6,16 +6,22 @@ const router = express.Router();
 router.post('/contact', async (req, res) => {
     const { name, email, message } = req.body;
 
+    const user = process.env.EMAIL_USER;
+    const pass = process.env.EMAIL_PASS;
+    if (!user || !pass) {
+        return res.status(500).json({ success: false, message: 'Email service is not configured' });
+    }
+
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'rickace917@gmail.com',
-            pass: 'yeip pxyl yxey sffg'
+            user,
+            pass
         }
     });
 
     const mailOptions = {
-        from: "rickace917@gmail.com",
+        from: user,
         to: email,
         subject: `Contact Form Submission from ${name}`,
         text: message
