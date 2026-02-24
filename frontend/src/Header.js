@@ -32,8 +32,14 @@ export default function Header() {
           <Link to="/home" className={location.pathname === '/home' ? 'active' : ''}>
             Home
           </Link>
+          <Link to="/feed" className={location.pathname === '/feed' ? 'active' : ''}>
+            Public Feed
+          </Link>
           <Link to="/blog" className={location.pathname === '/blog' ? 'active' : ''}>
-            My Blog
+            My Posts
+          </Link>
+          <Link to="/saved" className={location.pathname === '/saved' ? 'active' : ''}>
+            Saved
           </Link>
           <Link to="/create-blog" className={location.pathname === '/create-blog' ? 'active' : ''}>
             Create Post

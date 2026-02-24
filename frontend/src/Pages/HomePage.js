@@ -5,12 +5,25 @@ import '../Styles/HomePage.css';
 import photo from '../assets/photo.avif';
 import aa2 from '../assets/aa2.jpeg';
 import writing from '../assets/writing.avif';
+import { apiFetch } from '../api';
 
 const HomePage = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [publicPosts, setPublicPosts] = useState([]);
 
   useEffect(() => {
     setIsVisible(true);
+    (async () => {
+      try {
+        const res = await apiFetch('/blogs');
+        if (res.ok) {
+          const data = await res.json();
+          setPublicPosts(Array.isArray(data.blogs) ? data.blogs.slice(0, 6) : []);
+        }
+      } catch {
+        // ignore
+      }
+    })();
   }, []);
 
   // Sample featured posts data
@@ -67,6 +80,11 @@ const HomePage = () => {
                 Start Reading <FaArrowRight className="arrow-icon" />
               </button>
             </Link>
+            <Link to="/feed" style={{ marginLeft: 12 }}>
+              <button style={{ textDecoration: 'none' , borderRadius:"10px"  , padding:"20px"}}>
+                Public Feed <FaArrowRight className="arrow-icon" />
+              </button>
+            </Link>
           </div>
         </div>
         {/* <div className="hero-stats">
@@ -119,6 +137,35 @@ const HomePage = () => {
           ))}
         </div>
       </section>
+
+      {/* Recent Public Posts */}
+      {publicPosts.length ? (
+        <section className="featured-section">
+          <h2 className="section-title">Recent Public Posts</h2>
+          <div className="featured-grid">
+            {publicPosts.map((post) => (
+              <article key={post._id} className="featured-card">
+                <div className="card-content">
+                  <h3 className="card-title">{post.title}</h3>
+                  <p className="card-excerpt">{String(post.content || '').substring(0, 140)}...</p>
+                  <div className="card-meta">
+                    <div className="meta-left">
+                      <span className="author">{post.author}</span>
+                      <span className="date">
+                        <FaRegClock className="meta-icon" /> {new Date(post.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="meta-right">
+                      <span className="likes">{post.category}</span>
+                      <span className="comments">Public</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {/* Topics Section */}
       <section className="topics-section">

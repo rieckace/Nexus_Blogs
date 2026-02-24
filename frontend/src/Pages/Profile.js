@@ -2,8 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../UserContext';
 import { useNavigate } from 'react-router-dom';
 import '../Styles/Profile.css';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+import { apiFetch } from '../api';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -12,22 +11,23 @@ const Profile = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [avatarBuster, setAvatarBuster] = useState(0);
   const [status, setStatus] = useState('');
-  const { user: contextUser, setUser: setContextUser } = useContext(UserContext);
+  const { user: contextUser, setUser: setContextUser, loading } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (loading) return;
     if (!contextUser?.username) {
       navigate('/login');
       return;
     }
     fetchUserProfile(contextUser.username);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contextUser?.username]);
+  }, [contextUser?.username, loading]);
 
   const fetchUserProfile = async (username) => {
     try {
       setStatus('');
-      const response = await fetch(`${API_BASE_URL}/profile/${encodeURIComponent(username)}`);
+      const response = await apiFetch(`/profile/${encodeURIComponent(username)}`);
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
       setUser(data.user);
@@ -66,7 +66,7 @@ const Profile = () => {
         }
 
         setStatus('Uploading photo...');
-        const response = await fetch(`${API_BASE_URL}/profile/${encodeURIComponent(username)}/avatar`, {
+        const response = await apiFetch(`/profile/${encodeURIComponent(username)}/avatar`, {
           method: 'POST',
           body: formData,
         });
@@ -93,7 +93,7 @@ const Profile = () => {
         return;
       }
       setStatus('Saving...');
-      const response = await fetch(`${API_BASE_URL}/profile/${encodeURIComponent(username)}`, {
+      const response = await apiFetch(`/profile/${encodeURIComponent(username)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch(`${API_BASE_URL}/auth/logout`, {
+      await apiFetch(`/auth/logout`, {
         method: 'POST',
       });
       setContextUser(null);
@@ -129,7 +129,7 @@ const Profile = () => {
     }
   };
 
-  if (!user) {
+  if (loading || !user) {
     return <div className="loading">Loading...</div>;
   }
 

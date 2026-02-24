@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { FaEdit, FaTrash, FaClock, FaUser, FaFolder, FaComment, FaTimes } from 'react-icons/fa';
+import React, { useState, useEffect, useContext } from 'react';
+import { FaEdit, FaTrash, FaClock, FaUser, FaFolder, FaComment, FaTimes, FaRegHeart, FaRegBookmark } from 'react-icons/fa';
 import '../Styles/BlogDetails.css';
+import { apiFetch } from '../api';
+import { UserContext } from '../UserContext';
 
 const BlogDetail = ({ blog, onClose, onUpdate, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -8,15 +10,23 @@ const BlogDetail = ({ blog, onClose, onUpdate, onDelete }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
+  const { user } = useContext(UserContext);
+
+  const [blogState, setBlogState] = useState(blog);
+
+  useEffect(() => {
+    setBlogState(blog);
+    setEditedBlog(blog);
+  }, [blog]);
 
   // Fetch comments when the component mounts or when blog ID changes
   useEffect(() => {
     fetchComments();
-  }, [blog._id]);
+  }, [blogState._id]);
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/blogs/${blog._id}/comments`);
+      const response = await apiFetch(`/blogs/${blog._id}/comments`);
       if (!response.ok) throw new Error('Failed to fetch comments');
       const data = await response.json();
       setComments(data.comments);
@@ -25,18 +35,49 @@ const BlogDetail = ({ blog, onClose, onUpdate, onDelete }) => {
     }
   };
 
+  const handleToggleLike = async () => {
+    try {
+      const res = await apiFetch(`/blogs/${blogState._id}/like`, { method: 'POST' });
+      if (!res.ok) return;
+      const data = await res.json();
+      setBlogState(data.blog);
+      onUpdate(data.blog);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleToggleBookmark = async () => {
+    try {
+      const res = await apiFetch(`/blogs/${blogState._id}/bookmark`, { method: 'POST' });
+      if (!res.ok) return;
+      const data = await res.json();
+      setBlogState(data.blog);
+      onUpdate(data.blog);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/blogs/${blog._id}`, {
+      const response = await apiFetch(`/blogs/${blog._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(editedBlog),
+        body: JSON.stringify({
+          title: editedBlog.title,
+          content: editedBlog.content,
+          category: editedBlog.category,
+          visibility: editedBlog.visibility,
+        }),
       });
 
       if (response.ok) {
-        onUpdate(editedBlog);
+        const data = await response.json();
+        onUpdate(data.blog);
+        setBlogState(data.blog);
         setIsEditing(false);
       }
     } catch (error) {
@@ -50,14 +91,13 @@ const BlogDetail = ({ blog, onClose, onUpdate, onDelete }) => {
 
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:4000/blogs/${blog._id}/comments`, {
+      const response = await apiFetch(`/blogs/${blog._id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           content: newComment,
-          author: localStorage.getItem('username') || 'Anonymous', // Get logged-in username
         }),
       });
 
@@ -77,7 +117,7 @@ const BlogDetail = ({ blog, onClose, onUpdate, onDelete }) => {
     if (!window.confirm('Are you sure you want to delete this comment?')) return;
 
     try {
-      const response = await fetch(`http://localhost:4000/comment/com${blog._id}/comments/${commentId}`, {
+      const response = await apiFetch(`/blogs/${blog._id}/comments/${commentId}`, {
         method: 'DELETE',
       });
 
@@ -95,7 +135,7 @@ const BlogDetail = ({ blog, onClose, onUpdate, onDelete }) => {
         <button className="close-button" onClick={onClose}>
           <FaTimes />
         </button>
-        
+
         {isEditing ? (
           <div className="edit-form">
             <input
@@ -116,6 +156,14 @@ const BlogDetail = ({ blog, onClose, onUpdate, onDelete }) => {
               className="edit-input"
               placeholder="Category"
             />
+            <select
+              value={editedBlog.visibility || 'public'}
+              onChange={(e) => setEditedBlog({ ...editedBlog, visibility: e.target.value })}
+              className="edit-input"
+            >
+              <option value="public">Public</option>
+              <option value="private">Private</option>
+            </select>
             <div className="edit-actions">
               <button onClick={handleUpdate} className="save-btn">Save</button>
               <button onClick={() => setIsEditing(false)} className="cancel-btn">Cancel</button>
@@ -123,24 +171,36 @@ const BlogDetail = ({ blog, onClose, onUpdate, onDelete }) => {
           </div>
         ) : (
           <div className="blog-content">
-            <h1>{blog.title}</h1>
+            <h1>{blogState.title}</h1>
             <div className="blog-meta">
-              <span><FaUser /> {blog.author}</span>
-              <span><FaClock /> {new Date(blog.createdAt).toLocaleDateString()}</span>
-              <span><FaFolder /> {blog.category}</span>
+              <span><FaUser /> {blogState.author}</span>
+              <span><FaClock /> {new Date(blogState.createdAt).toLocaleDateString()}</span>
+              <span><FaFolder /> {blogState.category}</span>
               <span><FaComment /> {comments.length} Comments</span>
+              {blogState.visibility === 'private' ? <span>Private</span> : <span>Public</span>}
             </div>
             <div className="blog-text">
-              {blog.content}
+              {blogState.content}
             </div>
-            <div className="blog-actions">
-              <button onClick={() => setIsEditing(true)} className="edit-btn">
-                <FaEdit /> Edit
+            <div className="blog-actions" style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              <button onClick={handleToggleLike} className="edit-btn">
+                <FaRegHeart /> {blogState.isLiked ? 'Liked' : 'Like'} ({blogState.likeCount || 0})
               </button>
-              <button onClick={() => onDelete(blog._id)} className="delete-btn">
-                <FaTrash /> Delete
+              <button onClick={handleToggleBookmark} className="edit-btn">
+                <FaRegBookmark /> {blogState.isBookmarked ? 'Saved' : 'Save'} ({blogState.bookmarkCount || 0})
               </button>
             </div>
+
+            {blogState.isOwner ? (
+              <div className="blog-actions">
+                <button onClick={() => setIsEditing(true)} className="edit-btn">
+                  <FaEdit /> Edit
+                </button>
+                <button onClick={() => onDelete(blogState._id)} className="delete-btn">
+                  <FaTrash /> Delete
+                </button>
+              </div>
+            ) : null}
           </div>
         )}
 
@@ -153,7 +213,7 @@ const BlogDetail = ({ blog, onClose, onUpdate, onDelete }) => {
               placeholder="Write a comment..."
               required
             />
-            <button type="submit" active={loading}>
+            <button type="submit" disabled={loading}>
               {loading ? 'Posting...' : 'Post Comment'}
             </button>
           </form>
@@ -168,8 +228,7 @@ const BlogDetail = ({ blog, onClose, onUpdate, onDelete }) => {
                   </span>
                 </div>
                 <p className="comment-content">{comment.content}</p>
-                {(localStorage.getItem('username') === comment.author || 
-                  localStorage.getItem('username') === blog.author) && (
+                {(user?.username === comment.author || user?.username === blog.author) && (
                   <button 
                     onClick={() => handleDeleteComment(comment._id)}
                     className="delete-comment-btn"

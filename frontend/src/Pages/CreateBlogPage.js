@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaPaperPlane, FaTimes } from 'react-icons/fa';
 import '../Styles/CreateBlogPage.css';
+import { apiFetch } from '../api';
 
 const CreateBlogPage = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [author, setAuthor] = useState('');
   const [category, setCategory] = useState('');
   const [externalLink, setExternalLink] = useState('');
+  const [visibility, setVisibility] = useState('public');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -23,7 +24,7 @@ const CreateBlogPage = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    if (!title || !content || !author || !category) {
+    if (!title || !content || !category) {
       alert('Please fill all the required fields');
       setIsSubmitting(false);
       return;
@@ -32,13 +33,13 @@ const CreateBlogPage = () => {
     const blogData = {
       title,
       content,
-      author,
       category,
       externalLink,
+      visibility,
     };
 
     try {
-      const response = await fetch('http://localhost:4000/blogs/create', {
+      const response = await apiFetch('/blogs/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,9 +65,9 @@ const CreateBlogPage = () => {
   const clearForm = () => {
     setTitle('');
     setContent('');
-    setAuthor('');
     setCategory('');
     setExternalLink('');
+    setVisibility('public');
   };
 
   return (
@@ -97,15 +98,16 @@ const CreateBlogPage = () => {
             </div>
 
             <div className="form-group">
-              <label>Author <span className="required">*</span></label>
-              <input
-                type="text"
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-                placeholder="Enter author name"
+              <label>Visibility <span className="required">*</span></label>
+              <select
+                value={visibility}
+                onChange={(e) => setVisibility(e.target.value)}
                 required
                 className="form-input"
-              />
+              >
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+              </select>
             </div>
 
             <div className="form-group">

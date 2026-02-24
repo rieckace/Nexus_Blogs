@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../Styles/Subscribe.css';
 import { Link } from 'react-router-dom';
+import { apiFetch } from '../api';
 
 const Subscribe = () => {
     const [email, setEmail] = useState('');
@@ -10,15 +11,17 @@ const Subscribe = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await fetch('http://localhost:4000/subscribe/', {
+        const response = await apiFetch('/subscribe/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
             });
-            const result = await response.json();
-            if(response.ok){
-                setStatus("Subscribed successfully.");
-            }
+        const result = await response.json().catch(() => ({}));
+        if (response.ok) {
+          setStatus(result.message || 'Subscribed successfully.');
+        } else {
+          setStatus(result.message || 'Failed to subscribe!!!');
+        }
         } catch (error) {
             setStatus('Failed to subscribe!!!');
         }

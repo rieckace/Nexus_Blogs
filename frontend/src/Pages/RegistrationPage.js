@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import '../App.css'; // Import your CSS file
 import '../Styles/RegistrationPage.css'
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+import { apiFetch } from "../api";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
@@ -18,7 +17,7 @@ export default function RegisterPage() {
     setSuccessMessage('');
 
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      const response = await apiFetch(`/auth/register`, {
         method: 'POST',
         body: JSON.stringify({ username, password }),
         headers: { 'Content-Type': 'application/json' },

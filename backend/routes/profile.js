@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const User = require('../models/User');
+const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -37,8 +38,12 @@ router.get('/:username', async (req, res) => {
 });
 
 // Update user profile (username is not editable here)
-router.put('/:username', async (req, res) => {
+router.put('/:username', requireAuth, async (req, res) => {
     try {
+        if (req.auth?.username !== req.params.username) {
+            return res.status(403).json({ message: 'Not allowed' });
+        }
+
         const { email, location, phone, bio } = req.body || {};
         const updatedUser = await User.findOneAndUpdate(
             { username: req.params.username },
@@ -60,8 +65,12 @@ router.put('/:username', async (req, res) => {
 });
 
 // Upload avatar (stored as data URL string)
-router.post('/:username/avatar', upload.single('avatar'), async (req, res) => {
+router.post('/:username/avatar', requireAuth, upload.single('avatar'), async (req, res) => {
     try {
+        if (req.auth?.username !== req.params.username) {
+            return res.status(403).json({ message: 'Not allowed' });
+        }
+
         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
         if (!req.file.mimetype || !req.file.mimetype.startsWith('image/')) {
             return res.status(400).json({ message: 'Only image files are allowed' });

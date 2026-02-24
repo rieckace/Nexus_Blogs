@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../Styles/Contact.css';
+import { apiFetch } from '../api';
 
 const Contact = () => {
     const [name, setName] = useState('');
@@ -10,14 +11,16 @@ const Contact = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await fetch('http://localhost:4000/con/contact', {
+            const response = await apiFetch('/con/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, message })
             });
-            const result = await response.json();
-            if(response.ok){
-                setStatus("Message sent successfully.");
+            const result = await response.json().catch(() => ({}));
+            if (response.ok) {
+                setStatus(result.message || 'Message sent successfully.');
+            } else {
+                setStatus(result.message || 'Failed to send message. Please try again.');
             }
         } catch (error) {
             setStatus('Failed to send message. Please try again.');

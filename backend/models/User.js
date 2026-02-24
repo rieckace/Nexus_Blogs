@@ -9,6 +9,9 @@ const UserSchema = new mongoose.Schema({
     bio: { type: String, default: '' },
     // Stored as a data URL (e.g. 'data:image/png;base64,...') for simplicity.
     avatar: { type: String, default: '' },
+
+    // If using refresh tokens (JWT cookie auth), store a hash to support logout/invalidation.
+    refreshTokenHash: { type: String, default: '' },
 });
 
 const User = mongoose.model('User', UserSchema);

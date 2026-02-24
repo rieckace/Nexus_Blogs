@@ -2,8 +2,7 @@ import { useContext, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import '../Styles/LoginPage.css';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+import { apiFetch } from "../api";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -19,7 +18,7 @@ export default function LoginPage() {
     setSuccessMessage("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await apiFetch(`/auth/login`, {
         method: "POST",
         body: JSON.stringify({ username, password }),
         headers: { "Content-Type": "application/json" },
