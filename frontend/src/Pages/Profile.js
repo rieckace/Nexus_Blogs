@@ -134,8 +134,9 @@ const Profile = () => {
   }
 
   return (
-    <div className="profile-container">
-      <div className="profile-header">
+    <div className="profile-page">
+      <div className="profile-container">
+        <div className="profile-header">
         <div className="avatar-section">
           <img 
             src={getAvatarSrc()} 
@@ -224,6 +225,7 @@ const Profile = () => {
             </div>
           </form>
         )}
+      </div>
       </div>
     </div>
   );

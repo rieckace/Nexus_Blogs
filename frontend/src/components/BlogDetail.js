@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { FaEdit, FaTrash, FaClock, FaUser, FaFolder, FaComment, FaTimes, FaRegHeart, FaRegBookmark } from 'react-icons/fa';
 import '../Styles/BlogDetails.css';
 import { apiFetch } from '../api';
@@ -19,21 +19,22 @@ const BlogDetail = ({ blog, onClose, onUpdate, onDelete }) => {
     setEditedBlog(blog);
   }, [blog]);
 
-  // Fetch comments when the component mounts or when blog ID changes
-  useEffect(() => {
-    fetchComments();
-  }, [blogState._id]);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
-      const response = await apiFetch(`/blogs/${blog._id}/comments`);
+      if (!blogState?._id) return;
+      const response = await apiFetch(`/blogs/${blogState._id}/comments`);
       if (!response.ok) throw new Error('Failed to fetch comments');
       const data = await response.json();
       setComments(data.comments);
     } catch (error) {
       console.error('Error fetching comments:', error);
     }
-  };
+  }, [blogState?._id]);
+
+  // Fetch comments when the component mounts or when blog ID changes
+  useEffect(() => {
+    fetchComments();
+  }, [fetchComments]);
 
   const handleToggleLike = async () => {
     try {

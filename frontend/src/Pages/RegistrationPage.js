@@ -5,7 +5,7 @@ import '../Styles/RegistrationPage.css'
 import { apiFetch } from "../api";
 
 export default function RegisterPage() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -19,7 +19,7 @@ export default function RegisterPage() {
     try {
       const response = await apiFetch(`/auth/register`, {
         method: 'POST',
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },
       });
       if (response.ok) {
@@ -41,10 +41,10 @@ export default function RegisterPage() {
     <div className="register-container" >
       <form className="register" onSubmit={register}>
         <h1>Register Here</h1>
-        <input type="text"
-               placeholder="Enter username"
-               value={username}
-               onChange={ev => setUsername(ev.target.value)} />
+        <input type="email"
+               placeholder="Enter email"
+               value={email}
+               onChange={ev => setEmail(ev.target.value)} />
         <input type="password"
                placeholder="Enter password"
                value={password}

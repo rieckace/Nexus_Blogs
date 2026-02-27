@@ -17,11 +17,20 @@ function sha256(value) {
     return crypto.createHash('sha256').update(value).digest('hex');
 }
 
-function cookieOptions(maxAgeMs) {
+function isHttpsRequest(req) {
+    if (req.secure) return true;
+    const xfProto = req.headers['x-forwarded-proto'];
+    if (typeof xfProto === 'string') {
+        return xfProto.split(',')[0].trim().toLowerCase() === 'https';
+    }
+    return false;
+}
+
+function cookieOptions(req, maxAgeMs) {
     return {
         httpOnly: true,
         sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        secure: isHttpsRequest(req),
         maxAge: maxAgeMs,
         path: '/',
     };
@@ -29,7 +38,7 @@ function cookieOptions(maxAgeMs) {
 
 function signAccessToken(user) {
     return jwt.sign(
-        { sub: String(user._id), username: user.username },
+        { sub: String(user._id), username: user.username, email: user.email || '' },
         getAccessSecret(),
         { expiresIn: '15m' }
     );
@@ -55,16 +64,78 @@ function userResponse(user) {
     };
 }
 
+function normalizeEmail(email) {
+    if (typeof email !== 'string') return '';
+    return email.trim().toLowerCase();
+}
+
+function isValidEmail(email) {
+    // Minimal email sanity check (avoid over-restricting).
+    return typeof email === 'string' && /^\S+@\S+\.\S+$/.test(email);
+}
+
+function usernameBaseFromEmail(email) {
+    const local = String(email || '').split('@')[0] || 'user';
+    const cleaned = local
+        .toLowerCase()
+        .replace(/[^a-z0-9_]/g, '_')
+        .replace(/_+/g, '_')
+        .replace(/^_+|_+$/g, '');
+
+    const base = cleaned || 'user';
+    return base.slice(0, 20);
+}
+
+async function generateUniqueUsername(base) {
+    const safeBase = (base || 'user').slice(0, 20);
+    // Try base first, then append a short suffix.
+    const candidates = [safeBase];
+    for (let i = 0; i < 6; i++) {
+        candidates.push(`${safeBase}_${crypto.randomBytes(2).toString('hex')}`);
+    }
+
+    for (const candidate of candidates) {
+        // eslint-disable-next-line no-await-in-loop
+        const exists = await User.findOne({ username: candidate });
+        if (!exists) return candidate;
+    }
+    // Fallback: extremely unlikely
+    return `${safeBase}_${crypto.randomBytes(4).toString('hex')}`;
+}
+
 // Register Route
 router.post('/register', async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password, username } = req.body || {};
     try {
-        const existingUser = await User.findOne({ username });
-        if (existingUser) {
-            return res.status(400).json({ message: 'Username already exists' });
+        const normalizedEmail = normalizeEmail(email);
+        if (!normalizedEmail || !isValidEmail(normalizedEmail)) {
+            return res.status(400).json({ message: 'Valid email is required' });
         }
+        if (typeof password !== 'string' || password.length < 6) {
+            return res.status(400).json({ message: 'Password must be at least 6 characters' });
+        }
+
+        const existingEmail = await User.findOne({ email: normalizedEmail });
+        if (existingEmail) {
+            return res.status(400).json({ message: 'Email already exists' });
+        }
+
+        let finalUsername = typeof username === 'string' ? username.trim() : '';
+        if (!finalUsername) {
+            finalUsername = await generateUniqueUsername(usernameBaseFromEmail(normalizedEmail));
+        } else {
+            const existingUsername = await User.findOne({ username: finalUsername });
+            if (existingUsername) {
+                return res.status(400).json({ message: 'Username already exists' });
+            }
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, password: hashedPassword });
+        const newUser = new User({
+            username: finalUsername,
+            email: normalizedEmail,
+            password: hashedPassword,
+        });
         await newUser.save();
         res.status(200).json({ message: 'Registration successful' });
     } catch (err) {
@@ -75,9 +146,12 @@ router.post('/register', async (req, res) => {
 
 // Login Route
 router.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password, username } = req.body || {};
     try {
-        const user = await User.findOne({ username });
+        const normalizedEmail = normalizeEmail(email);
+        const user = normalizedEmail
+            ? await User.findOne({ email: normalizedEmail })
+            : await User.findOne({ username });
         if (!user) {
             return res.status(400).json({ message: 'User not found' });
         }
@@ -91,8 +165,8 @@ router.post('/login', async (req, res) => {
         user.refreshTokenHash = sha256(refreshToken);
         await user.save();
 
-        res.cookie('access_token', accessToken, cookieOptions(15 * 60 * 1000));
-        res.cookie('refresh_token', refreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000));
+        res.cookie('access_token', accessToken, cookieOptions(req, 15 * 60 * 1000));
+        res.cookie('refresh_token', refreshToken, cookieOptions(req, 7 * 24 * 60 * 60 * 1000));
         res.status(200).json(userResponse(user));
     } catch (err) {
         console.error(err);
@@ -133,7 +207,7 @@ router.post('/refresh', async (req, res) => {
         }
 
         const accessToken = signAccessToken(user);
-        res.cookie('access_token', accessToken, cookieOptions(15 * 60 * 1000));
+        res.cookie('access_token', accessToken, cookieOptions(req, 15 * 60 * 1000));
         return res.status(200).json({ ok: true });
     } catch {
         return res.status(401).json({ message: 'Not authenticated' });
@@ -160,8 +234,9 @@ router.post('/logout', async (req, res) => {
         // ignore
     }
 
-    res.clearCookie('access_token', { path: '/' });
-    res.clearCookie('refresh_token', { path: '/' });
+    const clearOpts = { path: '/', sameSite: 'lax', secure: isHttpsRequest(req) };
+    res.clearCookie('access_token', clearOpts);
+    res.clearCookie('refresh_token', clearOpts);
     res.status(200).json({ message: 'Logged out' });
 });
 

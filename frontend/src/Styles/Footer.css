@@ -1,0 +1,41 @@
+.app-footer {
+  width: 100%;
+  padding: 28px 16px;
+  background: #0b1220;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-footer__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.app-footer__headline {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 1rem;
+}
+
+.app-footer__copyright {
+  margin: 0 0 14px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+}
+
+.app-footer__links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.app-footer__link {
+  color: rgba(255, 255, 255, 0.86);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.app-footer__link:hover {
+  text-decoration: underline;
+}

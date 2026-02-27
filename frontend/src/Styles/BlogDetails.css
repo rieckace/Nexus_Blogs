@@ -27,18 +27,21 @@
   
   .close-button {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 0.75rem;
+    right: 0.75rem;
     background: none;
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
     color: #666;
     transition: color 0.2s ease;
-    padding: 0.5rem;
+    padding: 0;
     border-radius: 50%;
-    height: 80px;
-    width: 80px;
+    height: 40px;
+    width: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .close-button:hover {
@@ -53,6 +56,28 @@
     margin-bottom: 1rem;
     color: #333;
     line-height: 1.3;
+    padding-right: 3rem;
+  }
+
+  @media (max-width: 640px) {
+    .blog-detail-overlay {
+      padding: 1rem;
+    }
+
+    .blog-detail-container {
+      padding: 1.25rem;
+      margin: 1rem auto;
+    }
+
+    .close-button {
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+
+    .blog-content h1 {
+      font-size: 1.6rem;
+      padding-right: 2.75rem;
+    }
   }
   
   .blog-meta {

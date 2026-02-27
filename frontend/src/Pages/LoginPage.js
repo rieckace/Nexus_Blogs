@@ -5,7 +5,7 @@ import '../Styles/LoginPage.css';
 import { apiFetch } from "../api";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -20,7 +20,7 @@ export default function LoginPage() {
     try {
       const response = await apiFetch(`/auth/login`, {
         method: "POST",
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -31,7 +31,7 @@ export default function LoginPage() {
         setRedirect(true);
       } else {
         const data = await response.json();
-        setErrorMessage(data.message || "Username or password is incorrect. Please try again.");
+        setErrorMessage(data.message || "Email or password is incorrect. Please try again.");
       }
     } catch (err) {
       console.error("Error during login:", err);
@@ -60,14 +60,14 @@ export default function LoginPage() {
 
           <form className="login-form" onSubmit={login}>
             <div className="form-group">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="email">Email</label>
               <div className="input-wrapper">
                 <input
-                  id="username"
-                  type="text"
-                  placeholder="Enter your username"
-                  value={username}
-                  onChange={(ev) => setUsername(ev.target.value)}
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(ev) => setEmail(ev.target.value)}
                   required
                 />
               </div>

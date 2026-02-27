@@ -8,7 +8,6 @@ const MyBlogPage = () => {
   const [blogs, setBlogs] = useState([]);
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
 
@@ -105,6 +104,15 @@ const MyBlogPage = () => {
     }
   };
 
+  const handleSearchOrClear = () => {
+    if (searchTerm.trim()) {
+      setSearchTerm('');
+      fetchBlogs();
+      return;
+    }
+    handleSearch();
+  };
+
   const filteredBlogs = blogs.filter(blog => {
     const matchesFilter = filter === 'all' || blog.category === filter;
     return matchesFilter;
@@ -134,8 +142,8 @@ const MyBlogPage = () => {
             onKeyDown={handleKeyDown}
             className="search-input"
           />
-          <button className="search-toggle" onClick={handleSearch}>
-            {searchOpen ? <FaTimes /> : <FaSearch />}
+          <button className="search-toggle" onClick={handleSearchOrClear}>
+            {searchTerm.trim() ? <FaTimes /> : <FaSearch />}
           </button>
           <select
             value={filter}

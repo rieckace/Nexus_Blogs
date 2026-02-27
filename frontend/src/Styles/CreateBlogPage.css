@@ -2,9 +2,16 @@
   max-width: 1400px;
   margin: 2rem auto;
   padding: 0 1.5rem;
-  width: 800px;
+  width: 100%;
   background-image: url('https://img.freepik.com/premium-photo/png-light-effect-spotlight-spark-png-stadium-lighting-sunlight-spot-lighting_168332-652.jpg?ga=GA1.1.454656047.1738260034&semt=ais_hybrid');
   
+}
+
+@media (max-width: 480px) {
+  .create-blog-container {
+    margin: 1rem auto;
+    padding: 0 1rem;
+  }
 }
 .create-blog-header {
   display: flex;

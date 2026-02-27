@@ -1,10 +1,3 @@
-body {
-  /* background-image: url('/assets/bg.png'); */
-  background-size: cover; /* Makes the image cover the entire background */
-  background-position: center; /* Centers the image */
-  background-repeat: no-repeat; /* Prevents the image from repeating */
-}
-
 .login-page {
   min-height: 100vh;
   display: flex;
@@ -90,6 +83,10 @@ body {
 .brand-title {
   font-size: 32px;
   font-weight: 700;
+  background: linear-gradient(45deg, #2d3436, #00b894);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
   margin-bottom: 8px;
 }

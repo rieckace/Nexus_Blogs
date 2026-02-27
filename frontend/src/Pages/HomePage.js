@@ -6,6 +6,7 @@ import photo from '../assets/photo.avif';
 import aa2 from '../assets/aa2.jpeg';
 import writing from '../assets/writing.avif';
 import { apiFetch } from '../api';
+import Footer from '../components/Footer';
 
 const HomePage = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -74,16 +75,12 @@ const HomePage = () => {
           <p className="hero-subtitle">
             Discover our blog posts and stay updated.
           </p>
-          <div>
-            <Link to="/blog">
-              <button style={{ textDecoration: 'none' , borderRadius:"10px"  , padding:"20px"}}>
-                Start Reading <FaArrowRight className="arrow-icon" />
-              </button>
+          <div className="hero-cta-row">
+            <Link to="/blog" className="cta-button">
+              Start Reading <FaArrowRight className="arrow-icon" />
             </Link>
-            <Link to="/feed" style={{ marginLeft: 12 }}>
-              <button style={{ textDecoration: 'none' , borderRadius:"10px"  , padding:"20px"}}>
-                Public Feed <FaArrowRight className="arrow-icon" />
-              </button>
+            <Link to="/feed" className="cta-button secondary">
+              Public Feed <FaArrowRight className="arrow-icon" />
             </Link>
           </div>
         </div>
@@ -199,22 +196,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Footer Section */}
-      <footer className="footer-section">
-        <div className="footer-content">
-          <marquee behavior="scroll" direction="left" className="marquee-text">
-            Thank you for visiting Nexus. Stay tuned for more updates and articles!
-          </marquee>
-          <p className="footer-text">
-            &copy; 2025 Nexus. All rights reserved.
-          </p>
-          <div className="footer-links">
-            <Link to="/about" className="footer-link">About Us</Link>
-            <Link to="/contact" className="footer-link">Contact</Link>
-            <Link to="/privacy" className="footer-link">Privacy Policy</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -8,6 +8,7 @@ const CreateBlogPage = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
+  const [customCategory, setCustomCategory] = useState('');
   const [externalLink, setExternalLink] = useState('');
   const [visibility, setVisibility] = useState('public');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,9 +21,18 @@ const CreateBlogPage = () => {
     'Education', 'Entertainment', 'Other'
   ];
 
+  const isOtherCategory = category === 'Other';
+
+  const resolveCategory = () => {
+    if (!isOtherCategory) return category;
+    return customCategory.trim();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    const finalCategory = resolveCategory();
 
     if (!title || !content || !category) {
       alert('Please fill all the required fields');
@@ -30,10 +40,16 @@ const CreateBlogPage = () => {
       return;
     }
 
+    if (isOtherCategory && !finalCategory) {
+      alert('Please enter your category');
+      setIsSubmitting(false);
+      return;
+    }
+
     const blogData = {
       title,
       content,
-      category,
+      category: finalCategory,
       externalLink,
       visibility,
     };
@@ -66,6 +82,7 @@ const CreateBlogPage = () => {
     setTitle('');
     setContent('');
     setCategory('');
+    setCustomCategory('');
     setExternalLink('');
     setVisibility('public');
   };
@@ -114,7 +131,11 @@ const CreateBlogPage = () => {
               <label>Category <span className="required">*</span></label>
               <select
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setCategory(next);
+                  if (next !== 'Other') setCustomCategory('');
+                }}
                 required
                 className="form-input"
               >
@@ -124,6 +145,20 @@ const CreateBlogPage = () => {
                 ))}
               </select>
             </div>
+
+            {isOtherCategory ? (
+              <div className="form-group">
+                <label>Other Category <span className="required">*</span></label>
+                <input
+                  type="text"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                  placeholder="Type your category"
+                  required
+                  className="form-input"
+                />
+              </div>
+            ) : null}
 
             <div className="form-group">
               <label>External Link</label>

@@ -13,6 +13,9 @@ const profileRoutes = require('./routes/profile');
 const PORT = process.env.PORT || 4000;
 const app = express();
 
+// Allow secure-cookie detection behind reverse proxies (Render/Vercel/etc.)
+app.set('trust proxy', 1);
+
 // Connect to MongoDB
 connectDB();
 

@@ -1,10 +1,20 @@
+.profile-page {
+  min-height: calc(100vh - 72px);
+  padding: 28px 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
 .profile-container {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
+  width: 100%;
+  max-width: 980px;
+  margin: 0;
+  padding: 24px;
   background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
 .profile-header {
@@ -41,7 +51,7 @@
   padding: 0.5rem 1rem;
   background: #007bff;
   color: white;
-  border-radius: 4px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 0.9rem;
 }
@@ -57,20 +67,20 @@
 .profile-name {
   margin: 0 0 1rem;
   font-size: 2rem;
-  color: #333;
+  color: #111827;
 }
 
 .profile-email,
 .profile-location,
 .profile-phone {
   margin: 0.5rem 0;
-  color: #666;
+  color: rgba(17, 24, 39, 0.75);
 }
 
 .profile-bio {
   margin: 1rem 0;
   line-height: 1.6;
-  color: #444;
+  color: rgba(17, 24, 39, 0.82);
 }
 
 .profile-actions {
@@ -83,7 +93,7 @@
 .profile-status {
   align-self: flex-start;
   margin-top: 0.5rem;
-  color: #444;
+  color: rgba(17, 24, 39, 0.82);
   font-size: 0.95rem;
 }
 
@@ -93,7 +103,7 @@
 .cancel-button {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.2s;
@@ -127,8 +137,8 @@
 .edit-form input,
 .edit-form textarea {
   padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 12px;
   font-size: 1rem;
 }
 
@@ -169,11 +179,6 @@
 }
 
 @media (max-width: 768px) {
-  .profile-container {
-    margin: 1rem;
-    padding: 1.25rem;
-  }
-
   .profile-header {
     flex-direction: column;
     align-items: center;

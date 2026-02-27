@@ -28,35 +28,54 @@ const Contact = () => {
     };
 
     return (
-        <div className="contact-container">
-            <h1>Contact Us</h1>
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="name">Name:</label>
-                <input
-                    type="text"
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
-                <label htmlFor="email">Email:</label>
-                <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <label htmlFor="message">Message:</label>
-                <textarea
-                    id="message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    required
-                ></textarea>
-                <button type="submit">Send Message</button>
-            </form>
-            {status && <p>{status}</p>}
+        <div className="contact-page">
+            <div className="contact-card">
+                <div className="contact-card-header">
+                    <h1>Contact</h1>
+                    <p>Have feedback or a feature request? Send us a message.</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="contact-form">
+                    <div className="field">
+                        <label htmlFor="name">Name</label>
+                        <input
+                            type="text"
+                            id="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Your name"
+                            required
+                        />
+                    </div>
+
+                    <div className="field">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="you@example.com"
+                            required
+                        />
+                    </div>
+
+                    <div className="field">
+                        <label htmlFor="message">Message</label>
+                        <textarea
+                            id="message"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Tell us what's on your mind..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button type="submit" className="contact-submit">Send message</button>
+                </form>
+
+                {status && <div className="contact-status">{status}</div>}
+            </div>
         </div>
     );
 };

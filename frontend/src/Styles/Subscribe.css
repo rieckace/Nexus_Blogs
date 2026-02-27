@@ -53,35 +53,4 @@
     color: #4CAF50;
     margin-top: 20px;
 }
-
-/* Footer Section */
-.footer-section {
-    background-color: #333333ab;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .marquee-text {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-  }
-  
-  .footer-text {
-    margin: 5px 0;
-  }
-  
-  .footer-links {
-    margin-top: 10px;
-  }
-  
-  .footer-link {
-    color: #fff;
-    margin: 0 10px;
-    text-decoration: none;
-  }
-  
-  .footer-link:hover {
-    text-decoration: underline;
-  }
   

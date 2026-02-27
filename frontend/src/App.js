@@ -29,6 +29,15 @@ function RequireAuth({ children }) {
   return children;
 }
 
+function AuthedLayout({ children }) {
+  return (
+    <>
+      <Header />
+      <main className="app-page">{children}</main>
+    </>
+  );
+}
+
 function App() {
   return (
     <Router>
@@ -43,10 +52,9 @@ function App() {
           path="/home"
           element={
             <RequireAuth>
-              <>
-                <Header />
+              <AuthedLayout>
                 <HomePage />
-              </>
+              </AuthedLayout>
             </RequireAuth>
           }
         />
@@ -54,10 +62,9 @@ function App() {
           path="/blog"
           element={
             <RequireAuth>
-              <>
-                <Header />
+              <AuthedLayout>
                 <MyBlogPage />
-              </>
+              </AuthedLayout>
             </RequireAuth>
           }
         />
@@ -65,10 +72,9 @@ function App() {
           path="/feed"
           element={
             <RequireAuth>
-              <>
-                <Header />
+              <AuthedLayout>
                 <PublicFeedPage />
-              </>
+              </AuthedLayout>
             </RequireAuth>
           }
         />
@@ -76,10 +82,9 @@ function App() {
           path="/saved"
           element={
             <RequireAuth>
-              <>
-                <Header />
+              <AuthedLayout>
                 <SavedBlogsPage />
-              </>
+              </AuthedLayout>
             </RequireAuth>
           }
         />
@@ -87,10 +92,9 @@ function App() {
           path="/create-blog"
           element={
             <RequireAuth>
-              <>
-                <Header />
+              <AuthedLayout>
                 <CreatePostPage />
-              </>
+              </AuthedLayout>
             </RequireAuth>
           }
         />
@@ -98,10 +102,9 @@ function App() {
           path="/subscribe"
           element={
             <RequireAuth>
-              <>
-                <Header />
+              <AuthedLayout>
                 <Subscribe />
-              </>
+              </AuthedLayout>
             </RequireAuth>
           }
         />
@@ -109,10 +112,9 @@ function App() {
           path="/contact"
           element={
             <RequireAuth>
-              <>
-                <Header />
+              <AuthedLayout>
                 <Contact />
-              </>
+              </AuthedLayout>
             </RequireAuth>
           }
         />
@@ -120,10 +122,9 @@ function App() {
           path="/about"
           element={
             <RequireAuth>
-              <>
-                <Header />
+              <AuthedLayout>
                 <AboutPage />
-              </>
+              </AuthedLayout>
             </RequireAuth>
           }
         />
@@ -131,10 +132,9 @@ function App() {
           path="/privacy"
           element={
             <RequireAuth>
-              <>
-                <Header />
+              <AuthedLayout>
                 <PrivacyPage />
-              </>
+              </AuthedLayout>
             </RequireAuth>
           }
         />
@@ -142,10 +142,9 @@ function App() {
           path="/profile"
           element={
             <RequireAuth>
-              <>
-                <Header />
+              <AuthedLayout>
                 <Profile />
-              </>
+              </AuthedLayout>
             </RequireAuth>
           }
         />

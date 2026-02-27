@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../Styles/Subscribe.css';
-import { Link } from 'react-router-dom';
 import { apiFetch } from '../api';
+import Footer from '../components/Footer';
 
 const Subscribe = () => {
     const [email, setEmail] = useState('');
@@ -46,22 +46,7 @@ const Subscribe = () => {
           </div>
         </div>
 
-        {/* Footer Section */}
-        <footer className="footer-section" style={{width:"100vw"}}> 
-          <div className="footer-content">
-            <marquee behavior="scroll" direction="left" className="marquee-text">
-              Thank you for visiting Nexus. Stay tuned for more updates and articles!
-            </marquee>
-            <p className="footer-text">
-              &copy; 2025 Nexus. All rights reserved.
-            </p>
-            <div className="footer-links">
-              <Link to="/about" className="footer-link">About Us</Link>
-              <Link to="/contact" className="footer-link">Contact</Link>
-              <Link to="/privacy" className="footer-link">Privacy Policy</Link>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     );
 };
