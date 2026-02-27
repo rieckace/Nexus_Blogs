@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Nexus icon">
+  <defs>
+    <linearGradient id="bg" x1="90" y1="70" x2="420" y2="460" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2d3436"/>
+      <stop offset="1" stop-color="#636e72"/>
+    </linearGradient>
+  </defs>
+  <rect x="48" y="48" width="416" height="416" rx="120" fill="url(#bg)"/>
+  <path d="M168 352V160h46l130 162V160h44v192h-46L212 190v162h-44z" fill="#ffffff"/>
+  <circle cx="372" cy="352" r="26" fill="#00b894"/>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Nexus preview">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="80" x2="1080" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2d3436"/>
+      <stop offset="1" stop-color="#636e72"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="64" fill="#ffffff"/>
+  <rect x="72" y="72" width="1056" height="486" rx="56" fill="url(#bg)"/>
+
+  <g transform="translate(140,120)">
+    <rect x="0" y="0" width="196" height="196" rx="56" fill="rgba(255,255,255,0.12)"/>
+    <path d="M54 158V38h22l62 78V38h21v120h-22L75 80v78H54z" fill="#ffffff"/>
+    <circle cx="162" cy="158" r="16" fill="#00b894"/>
+  </g>
+
+  <g transform="translate(380,158)" fill="#ffffff">
+    <text x="0" y="80" font-size="92" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-weight="800">Nexus</text>
+    <circle cx="282" cy="56" r="10" fill="#00b894"/>
+    <text x="0" y="148" font-size="34" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-weight="500" opacity="0.92">Your modern blogging & reading hub</text>
+  </g>
+</svg>
