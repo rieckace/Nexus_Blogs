@@ -27,10 +27,15 @@ function isHttpsRequest(req) {
 }
 
 function cookieOptions(req, maxAgeMs) {
+    const desiredSameSiteRaw = process.env.COOKIE_SAMESITE;
+    const desiredSameSite = typeof desiredSameSiteRaw === 'string' ? desiredSameSiteRaw.trim().toLowerCase() : '';
+    const sameSite = desiredSameSite || (process.env.NODE_ENV === 'production' ? 'none' : 'lax');
+    const secure = sameSite === 'none' ? true : isHttpsRequest(req);
+
     return {
         httpOnly: true,
-        sameSite: 'lax',
-        secure: isHttpsRequest(req),
+        sameSite,
+        secure,
         maxAge: maxAgeMs,
         path: '/',
     };
@@ -234,7 +239,11 @@ router.post('/logout', async (req, res) => {
         // ignore
     }
 
-    const clearOpts = { path: '/', sameSite: 'lax', secure: isHttpsRequest(req) };
+    const desiredSameSiteRaw = process.env.COOKIE_SAMESITE;
+    const desiredSameSite = typeof desiredSameSiteRaw === 'string' ? desiredSameSiteRaw.trim().toLowerCase() : '';
+    const sameSite = desiredSameSite || (process.env.NODE_ENV === 'production' ? 'none' : 'lax');
+    const secure = sameSite === 'none' ? true : isHttpsRequest(req);
+    const clearOpts = { path: '/', sameSite, secure };
     res.clearCookie('access_token', clearOpts);
     res.clearCookie('refresh_token', clearOpts);
     res.status(200).json({ message: 'Logged out' });

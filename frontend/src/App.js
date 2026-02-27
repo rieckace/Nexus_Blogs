@@ -15,7 +15,6 @@ import Contact from "./Pages/Contact"; // Import Contact page
 import Profile from "./Pages/Profile"; // Import Profile page
 import AboutPage from "./Pages/AboutPage";
 import PrivacyPage from "./Pages/PrivacyPage";
-import ApiWarmupOverlay from "./components/ApiWarmupOverlay";
 import './App.css';
 
 function RequireAuth({ children }) {
@@ -42,7 +41,6 @@ function AuthedLayout({ children }) {
 function App() {
   return (
     <Router>
-      <ApiWarmupOverlay />
       <Routes>
         <Route path="/" element={<IndexPage />} /> {/* Default entry point */}
         <Route path="/login" element={<LoginPage />} />

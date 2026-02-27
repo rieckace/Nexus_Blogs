@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 const connectDB = require('./config/db');
@@ -80,12 +81,19 @@ app.use('/profile', profileRoutes);
 // Serve the React frontend (single-origin deployment)
 if (process.env.NODE_ENV === 'production') {
     const buildPath = path.join(__dirname, '..', 'frontend', 'build');
-    app.use(express.static(buildPath));
+    const indexHtmlPath = path.join(buildPath, 'index.html');
+    const serveFrontend = process.env.SERVE_FRONTEND === 'true';
 
-    // SPA fallback
-    app.get('*', (_req, res) => {
-        res.sendFile(path.join(buildPath, 'index.html'));
-    });
+    // When deploying backend-only (e.g., Render) and frontend is hosted elsewhere (e.g., Vercel),
+    // this build folder won't exist. Only enable static serving if explicitly requested AND present.
+    if (serveFrontend && fs.existsSync(indexHtmlPath)) {
+        app.use(express.static(buildPath));
+
+        // SPA fallback
+        app.get('*', (_req, res) => {
+            res.sendFile(indexHtmlPath);
+        });
+    }
 }
 
 if (require.main === module) {

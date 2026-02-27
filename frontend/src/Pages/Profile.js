@@ -20,6 +20,12 @@ const Profile = () => {
       navigate('/login');
       return;
     }
+
+    // Render immediately using the already-fetched session user.
+    setUser(contextUser);
+    setEditedUser(contextUser);
+
+    // Refresh full profile in the background (keeps UI snappy).
     fetchUserProfile(contextUser.username);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contextUser?.username, loading]);
@@ -129,7 +135,13 @@ const Profile = () => {
     }
   };
 
-  if (loading || !user) {
+  // Only block rendering when we're still determining the session.
+  // Once contextUser exists, show the profile immediately and refresh in background.
+  if (loading && !contextUser) {
+    return <div className="loading">Loading...</div>;
+  }
+
+  if (!user) {
     return <div className="loading">Loading...</div>;
   }
 
